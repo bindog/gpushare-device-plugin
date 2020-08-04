@@ -37,7 +37,9 @@
   branch = "release-1.11"
 
 [[constraint]]
-  name = "k8s.io/client-go"
+  name = "k8s.io/r
+
+  "
   version = "~v8.0.0"
 
 [[override]]

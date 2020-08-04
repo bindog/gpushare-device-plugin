@@ -2,6 +2,7 @@ package nvidia
 
 import (
 	"fmt"
+	"golang.org/x/net/context"
 	"os"
 	"sort"
 	"time"
@@ -58,7 +59,7 @@ func kubeInit() {
 }
 
 func patchGPUCount(gpuCount int) error {
-	node, err := clientset.CoreV1().Nodes().Get(nodeName, metav1.GetOptions{})
+	node, err := clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
@@ -94,12 +95,12 @@ func getPendingPodsInNode() ([]v1.Pod, error) {
 	podIDMap := map[types.UID]bool{}
 
 	selector := fields.SelectorFromSet(fields.Set{"spec.nodeName": nodeName, "status.phase": "Pending"})
-	podList, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+	podList, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 		FieldSelector: selector.String(),
 		LabelSelector: labels.Everything().String(),
 	})
 	for i := 0; i < retries && err != nil; i++ {
-		podList, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+		podList, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 			FieldSelector: selector.String(),
 			LabelSelector: labels.Everything().String(),
 		})

@@ -1,11 +1,7 @@
-FROM golang:1.14.2-stretch as build
+FROM golang:1.10-stretch as build
 
-WORKDIR gpushare-device-plugin
+WORKDIR /go/src/github.com/AliyunContainerService/gpushare-device-plugin
 COPY . .
-
-ENV GOPROXY=https://goproxy.cn,direct
-
-RUN go mod vendor
 
 RUN export CGO_LDFLAGS_ALLOW='-Wl,--unresolved-symbols=ignore-in-object-files' && \
     go build -ldflags="-s -w" -o /go/bin/gpushare-device-plugin-v2 cmd/nvidia/main.go

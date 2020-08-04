@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/net/context"
 	"os"
 	"path"
 	"time"
@@ -56,13 +57,13 @@ func (p podInfo) equal(p1 podInfo) bool {
 
 func getActivePodsByNode(nodeName string) ([]v1.Pod, error) {
 	selector := fields.SelectorFromSet(fields.Set{"spec.nodeName": nodeName})
-	pods, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+	pods, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 		FieldSelector: selector.String(),
 		LabelSelector: labels.Everything().String(),
 	})
 
 	for i := 0; i < retries && err != nil; i++ {
-		pods, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+		pods, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 			FieldSelector: selector.String(),
 			LabelSelector: labels.Everything().String(),
 		})
@@ -76,12 +77,12 @@ func getActivePodsByNode(nodeName string) ([]v1.Pod, error) {
 }
 
 func getActivePodsInAllNodes() ([]v1.Pod, error) {
-	pods, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+	pods, err := clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 		LabelSelector: labels.Everything().String(),
 	})
 
 	for i := 0; i < retries && err != nil; i++ {
-		pods, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(metav1.ListOptions{
+		pods, err = clientset.CoreV1().Pods(v1.NamespaceAll).List(context.TODO(), metav1.ListOptions{
 			LabelSelector: labels.Everything().String(),
 		})
 		time.Sleep(100 * time.Millisecond)
@@ -107,7 +108,7 @@ func filterActivePods(pods []v1.Pod) (activePods []v1.Pod) {
 
 func getAllSharedGPUNode() ([]v1.Node, error) {
 	nodes := []v1.Node{}
-	allNodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
+	allNodes, err := clientset.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return nodes, err
 	}

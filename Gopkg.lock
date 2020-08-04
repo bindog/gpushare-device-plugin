@@ -584,7 +584,7 @@
     "k8s.io/client-go/listers/core/v1",
     "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/clientcmd",
-    "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1",
+    "k8s.io/kubelet/pkg/apis/deviceplugin/v1alpha",
     "k8s.io/kubernetes/pkg/util/node",
   ]
   solver-name = "gps-cdcl"

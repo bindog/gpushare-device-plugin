@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	pluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
+	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 )
 
 var (
@@ -126,18 +126,18 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context,
 
 		// 2. Update Pod spec
 		newPod := updatePodAnnotations(assumePod)
-		_, err = clientset.CoreV1().Pods(newPod.Namespace).Update(newPod)
+		_, err = clientset.CoreV1().Pods(newPod.Namespace).Update(context.TODO(), newPod, metav1.UpdateOptions{})
 		if err != nil {
 			// the object has been modified; please apply your changes to the latest version and try again
 			if err.Error() == OptimisticLockErrorMsg {
 				// retry
-				pod, err := clientset.CoreV1().Pods(assumePod.Namespace).Get(assumePod.Name, metav1.GetOptions{})
+				pod, err := clientset.CoreV1().Pods(assumePod.Namespace).Get(context.TODO(), assumePod.Name, metav1.GetOptions{})
 				if err != nil {
 					log.Warningf("Failed due to %v", err)
 					return buildErrResponse(reqs, podReqGPU), nil
 				}
 				newPod = updatePodAnnotations(pod)
-				_, err = clientset.CoreV1().Pods(newPod.Namespace).Update(newPod)
+				_, err = clientset.CoreV1().Pods(newPod.Namespace).Update(context.TODO(), newPod, metav1.UpdateOptions{})
 				if err != nil {
 					log.Warningf("Failed due to %v", err)
 					return buildErrResponse(reqs, podReqGPU), nil

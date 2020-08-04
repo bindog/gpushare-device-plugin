@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -209,7 +210,7 @@ func hasPendingGPUMemory(nodeInfos []*NodeInfo) (found bool) {
 }
 
 func getNodes(nodeName string) ([]v1.Node, error) {
-	node, err := clientset.CoreV1().Nodes().Get(nodeName, metav1.GetOptions{})
+	node, err := clientset.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
 	return []v1.Node{*node}, err
 }
 
@@ -217,7 +218,7 @@ func isGPUSharingNode(node v1.Node) bool {
 	value, ok := node.Status.Allocatable[resourceName]
 
 	if ok {
-		ok = (int(value.Value()) > 0)
+		ok = int(value.Value()) > 0
 	}
 
 	return ok
