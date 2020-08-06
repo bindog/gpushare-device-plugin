@@ -1,4 +1,4 @@
-module github.com/AliyunContainerService/gpushare-device-plugin
+module github.com/hnbcao/gpushare-device-plugin
 
 go 1.14
 
