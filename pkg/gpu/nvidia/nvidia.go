@@ -67,7 +67,6 @@ func getDevices() ([]*pluginapi.Device, map[string]uint) {
 		realDevNames[d.UUID] = id
 		// var KiB uint64 = 1024
 		log.Infof("# device Memory: %d", uint(*d.Memory))
-		statu, err := d.Status()
 		if getGPUMemory() == uint(0) {
 			setGPUMemory(uint(*d.Memory))
 		}
